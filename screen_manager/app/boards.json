@@ -1531,6 +1531,118 @@
   "wide_slots": false,
   "width": 800
  },
+ "checkout/lilygos3long.yaml": {
+  "alert": {
+   "line": 22,
+   "title_line": 29
+  },
+  "battery": false,
+  "board": "lilygos3long",
+  "camera": {
+   "full": [
+    640,
+    180
+   ]
+  },
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.4,
+   "model": "T-Display-S3-Long",
+   "name": "LilyGO",
+   "order": 23,
+   "settings": [],
+   "status": "experimental",
+   "touch": "AXS15231"
+  },
+  "chip": "ESP32-S3",
+  "columns": 4,
+  "dimmable": true,
+  "dpi": 196,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 25,
+   "icon_home": 34,
+   "icon_mini": 25,
+   "label": 15,
+   "setpoint": 55,
+   "sublabel": 15,
+   "sublabel_big": 19,
+   "watch_icon": 16,
+   "watch_value": 30
+  },
+  "height": 180,
+  "hotspot": true,
+  "look": "compact",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [
+   "dock",
+   "vacuum_card",
+   "cover_groups",
+   "clock_faces"
+  ],
+  "orientations": {
+   "landscape": {
+    "camera": {
+     "full": [
+      640,
+      180
+     ]
+    },
+    "columns": 4,
+    "height": 180,
+    "max": [
+     5,
+     1
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 1,
+    "width": 640
+   },
+   "portrait": {
+    "camera": {
+     "full": [
+      180,
+      640
+     ]
+    },
+    "columns": 1,
+    "height": 640,
+    "max": [
+     1,
+     8
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 4,
+    "width": 180
+   }
+  },
+  "rows": 1,
+  "spacing": {
+   "circle": 49,
+   "gap": 8,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 49,
+   "tile_pad": 11,
+   "top": 42
+  },
+  "tier": "full",
+  "wide_slots": false,
+  "width": 640
+ },
  "checkout/reterminald1001.yaml": {
   "alert": {
    "line": 27,
@@ -4304,6 +4416,118 @@
   "wide_slots": false,
   "width": 800
  },
+ "lilygos3long": {
+  "alert": {
+   "line": 22,
+   "title_line": 29
+  },
+  "battery": false,
+  "board": "lilygos3long",
+  "camera": {
+   "full": [
+    640,
+    180
+   ]
+  },
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.4,
+   "model": "T-Display-S3-Long",
+   "name": "LilyGO",
+   "order": 23,
+   "settings": [],
+   "status": "experimental",
+   "touch": "AXS15231"
+  },
+  "chip": "ESP32-S3",
+  "columns": 4,
+  "dimmable": true,
+  "dpi": 196,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 25,
+   "icon_home": 34,
+   "icon_mini": 25,
+   "label": 15,
+   "setpoint": 55,
+   "sublabel": 15,
+   "sublabel_big": 19,
+   "watch_icon": 16,
+   "watch_value": 30
+  },
+  "height": 180,
+  "hotspot": true,
+  "look": "compact",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [
+   "dock",
+   "vacuum_card",
+   "cover_groups",
+   "clock_faces"
+  ],
+  "orientations": {
+   "landscape": {
+    "camera": {
+     "full": [
+      640,
+      180
+     ]
+    },
+    "columns": 4,
+    "height": 180,
+    "max": [
+     5,
+     1
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 1,
+    "width": 640
+   },
+   "portrait": {
+    "camera": {
+     "full": [
+      180,
+      640
+     ]
+    },
+    "columns": 1,
+    "height": 640,
+    "max": [
+     1,
+     8
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 4,
+    "width": 180
+   }
+  },
+  "rows": 1,
+  "spacing": {
+   "circle": 49,
+   "gap": 8,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 49,
+   "tile_pad": 11,
+   "top": 42
+  },
+  "tier": "full",
+  "wide_slots": false,
+  "width": 640
+ },
  "packages/crowpanel101.yaml": {
   "alert": {
    "line": 18,
@@ -5835,6 +6059,118 @@
   "tier": "full",
   "wide_slots": false,
   "width": 800
+ },
+ "packages/lilygos3long.yaml": {
+  "alert": {
+   "line": 22,
+   "title_line": 29
+  },
+  "battery": false,
+  "board": "lilygos3long",
+  "camera": {
+   "full": [
+    640,
+    180
+   ]
+  },
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.4,
+   "model": "T-Display-S3-Long",
+   "name": "LilyGO",
+   "order": 23,
+   "settings": [],
+   "status": "experimental",
+   "touch": "AXS15231"
+  },
+  "chip": "ESP32-S3",
+  "columns": 4,
+  "dimmable": true,
+  "dpi": 196,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 25,
+   "icon_home": 34,
+   "icon_mini": 25,
+   "label": 15,
+   "setpoint": 55,
+   "sublabel": 15,
+   "sublabel_big": 19,
+   "watch_icon": 16,
+   "watch_value": 30
+  },
+  "height": 180,
+  "hotspot": true,
+  "look": "compact",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [
+   "dock",
+   "vacuum_card",
+   "cover_groups",
+   "clock_faces"
+  ],
+  "orientations": {
+   "landscape": {
+    "camera": {
+     "full": [
+      640,
+      180
+     ]
+    },
+    "columns": 4,
+    "height": 180,
+    "max": [
+     5,
+     1
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 1,
+    "width": 640
+   },
+   "portrait": {
+    "camera": {
+     "full": [
+      180,
+      640
+     ]
+    },
+    "columns": 1,
+    "height": 640,
+    "max": [
+     1,
+     8
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 4,
+    "width": 180
+   }
+  },
+  "rows": 1,
+  "spacing": {
+   "circle": 49,
+   "gap": 8,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 49,
+   "tile_pad": 11,
+   "top": 42
+  },
+  "tier": "full",
+  "wide_slots": false,
+  "width": 640
  },
  "packages/reterminald1001.yaml": {
   "alert": {

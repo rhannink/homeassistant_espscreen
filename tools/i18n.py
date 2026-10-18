@@ -206,7 +206,7 @@ LINT_KEEP = {
     'same button within the debounce window', 'no runtime tiles', 'setting off', 'screen dimmed', 'card open',
     'detail card open', 'camera open', 'a slider is being dragged', 'settings page open', 'alert showing', 'USB calibration ready; no tile actions',
     'GT911 touch test ready; no tile actions', 'ST7121 touch test ready; no tile actions',
-    'My M5Stack Tab5',
+    'My M5Stack Tab5', 'My LilyGO Long',
     'configuration not ready',
     'UI_TEST START: page/overlay render stress, no HA actions', 'Color', 'Color temperature', 'Brightness',
     # A plugin's action of JSON values (plugin_action.h, plugin API 0.12): JSON's true and false as Home Assistant's Python

@@ -211,6 +211,25 @@ int main() {
   assert(std::string(idle_text("off")) == "Off" && std::string(idle_text("idle")) == "Not playing" && std::string(idle_text("standby")) == "Standby");
   assert(playing("playing") && playing("buffering") && !playing("paused"));
   assert(has_track("paused") && !has_track("idle") && !has_track("off"));
+  // The Long keeps playback and the volume row beside each other on its short glass.
+  ui::configure(196, "compact");
+  Metrics strip;
+  strip.large = false;
+  strip.title_h = 25;
+  strip.artist_h = 22;
+  strip.small_h = 16;
+  for (int ends = 0; ends <= 2; ++ends) {
+    const auto l = layout(strip, 640, 120, ends);
+    assert(inside(l.art, 640, 120));
+    for (const auto *r : {&l.title, &l.bar, &l.prev, &l.play, &l.next,
+                          &l.minus, &l.volume, &l.plus}) {
+      assert(r->w > 0 && r->h > 0 && inside(*r, 640, 120));
+    }
+    assert(l.prev.w >= ui::touch_min() && l.play.w >= ui::touch_min());
+    assert(l.next.right() < l.minus.x);
+    assert(l.minus.right() < l.volume.x && l.volume.right() < l.plus.x);
+    for (int i = 0; i < ends; ++i) assert(inside(l.ends[i], 640, 120));
+  }
   printf("test_media_card: ok\n");
   return 0;
 }

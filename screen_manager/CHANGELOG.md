@@ -1,3 +1,8 @@
+## Unreleased
+
+- Rebase the LilyGO T-Display-S3-Long support onto the current upstream release,
+  preserving calibrated touch, full refresh, image support and short-screen controls.
+
 ## 0.4.89 (firmware 0.57.0)
 
 - **A thermostat's state line no longer runs into its card.** On screens with dense glass (the Waveshare P4 and
