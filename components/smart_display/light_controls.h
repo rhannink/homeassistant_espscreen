@@ -39,6 +39,7 @@ struct Row {
   std::array<lv_obj_t *, 2> ends{};
   std::array<lv_obj_t *, 6> stripes{};
   bool dirty = false; unsigned index{}; bool off = false; int held = 0;
+  int track_x = 0, track_y = 0, track_w = 0, track_h = 0;
 };
 inline Row rows[3];
 // The card the rows stand on: a hand's width, in the middle of the overlay that covers the glass.
@@ -67,7 +68,8 @@ inline void preview(Row &row) {
     lv_obj_set_style_bg_color(row.slider, lv_color_hsv_to_rgb(clamp(value, 0, 360) % 360, 100, 100), LV_PART_KNOB);
   } else if (row.index == 1) {
     lv_label_set_text_fmt(row.value, "%d K", value);
-    lv_obj_set_style_bg_color(row.slider, kelvin_color(value, lv_slider_get_min_value(row.slider), lv_slider_get_max_value(row.slider)), LV_PART_KNOB);
+    // Match brightness: a white rectangular LVGL knob, with the Kelvin gradient on the track.
+    lv_obj_set_style_bg_color(row.slider, theme::color(theme::KNOB), LV_PART_KNOB);
   } else {
     // The range reaches below 1 only to draw the short stub that holds the handle at 1 %.
     if (value < 1) { lv_slider_set_value(row.slider, 1, LV_ANIM_OFF); value = 1; }
@@ -191,6 +193,7 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
   const char *icons[] = {"\U000F03D8", "\U000F050F", "\U000F0335"};
   for (unsigned i = 0; i < 3; ++i) {
     auto &row = rows[i]; row.index = i;
+    row.track_x = track_x; row.track_y = track_y; row.track_w = track_w; row.track_h = track_h;
     row.box = plain(parent, margin + (strip ? i * (w + strip_gap) : 0),
                     strip ? top : top + i * spacing, w, card_h);
     lv_obj_set_style_bg_opa(row.box, LV_OPA_COVER, 0);
@@ -217,22 +220,22 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
     lv_obj_remove_style_all(row.slider);
     lv_obj_remove_flag(row.slider, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_ext_click_area(row.slider, ui::px(large ? 12 : 8));
-    if (i < 2) {
-      // The knob travels between the centres of the two round ends.
-      row.ends[0] = round_end(row.box, track_x, track_y, track_h, i == 0 ? RAINBOW[0] : WARM);
-      row.ends[1] = round_end(row.box, track_x + track_w - track_h, track_y, track_h, i == 0 ? RAINBOW[6] : COOL);
-      unsigned segments = i == 0 ? 6 : 1;
-      int span = track_w - track_h;
-      for (unsigned n = 0; n < segments; ++n) {
-        int start = n * span / segments, end = (n + 1) * span / segments;
+    if (i == 0) {
+      // Hue keeps its segmented spectrum and circular knob.
+      row.ends[0] = round_end(row.box, track_x, track_y, track_h, RAINBOW[0]);
+      row.ends[1] = round_end(row.box, track_x + track_w - track_h, track_y, track_h, RAINBOW[6]);
+      const int span = track_w - track_h;
+      for (unsigned n = 0; n < 6; ++n) {
+        const int start = n * span / 6, end = (n + 1) * span / 6;
         auto *stripe = row.stripes[n] = plain(row.box, track_x + radius + start, track_y, end - start, track_h);
         lv_obj_set_style_bg_opa(stripe, LV_OPA_COVER, 0);
-        lv_obj_set_style_bg_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n] : WARM), 0);
-        lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n + 1] : COOL), 0);
+        lv_obj_set_style_bg_color(stripe, lv_color_hex(RAINBOW[n]), 0);
+        lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(RAINBOW[n + 1]), 0);
         lv_obj_set_style_bg_grad_dir(stripe, LV_GRAD_DIR_HOR, 0);
       }
       lv_obj_move_foreground(row.slider);
-      lv_obj_set_pos(row.slider, track_x + radius, track_y); lv_obj_set_size(row.slider, span, track_h);
+      lv_obj_set_pos(row.slider, track_x + radius, track_y);
+      lv_obj_set_size(row.slider, span, track_h);
       lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_MAIN);
       lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_INDICATOR);
       lv_obj_set_style_bg_opa(row.slider, LV_OPA_COVER, LV_PART_KNOB);
@@ -240,10 +243,28 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
       lv_obj_set_style_pad_all(row.slider, ui::px(large ? 4 : 3), LV_PART_KNOB);
       lv_obj_set_style_border_width(row.slider, ui::px(large ? 4 : 3), LV_PART_KNOB);
       lv_obj_set_style_outline_width(row.slider, 1, LV_PART_KNOB);
-      // A faint dark edge that lifts the white ring off a pale end of the track.
       lv_obj_set_style_outline_color(row.slider, lv_color_black(), LV_PART_KNOB);
       lv_obj_set_style_outline_opa(row.slider, LV_OPA_20, LV_PART_KNOB);
-      lv_slider_set_range(row.slider, i == 0 ? 0 : 2000, i == 0 ? 360 : 6500);
+      lv_slider_set_range(row.slider, 0, 360);
+    } else if (i == 1) {
+      // Temperature uses the brightness slider's full-width geometry and knob styling.
+      lv_obj_set_pos(row.slider, track_x, track_y);
+      lv_obj_set_size(row.slider, track_w, track_h);
+      lv_obj_set_style_bg_opa(row.slider, LV_OPA_COVER, LV_PART_MAIN);
+      lv_obj_set_style_bg_color(row.slider, lv_color_hex(WARM), LV_PART_MAIN);
+      lv_obj_set_style_bg_grad_color(row.slider, lv_color_hex(COOL), LV_PART_MAIN);
+      lv_obj_set_style_bg_grad_dir(row.slider, LV_GRAD_DIR_HOR, LV_PART_MAIN);
+      lv_obj_set_style_radius(row.slider, LV_RADIUS_CIRCLE, LV_PART_MAIN);
+      lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_INDICATOR);
+      lv_obj_set_style_bg_opa(row.slider, LV_OPA_COVER, LV_PART_KNOB);
+      lv_obj_set_style_radius(row.slider, 2, LV_PART_KNOB);
+      const int handle = ui::px(large ? 4 : 3);
+      const int back = std::max(1, track_h / 8) + handle / 2, half = track_h >> 1;
+      lv_obj_set_style_pad_left(row.slider, back + handle / 2 - half, LV_PART_KNOB);
+      lv_obj_set_style_pad_right(row.slider, handle / 2 - back - (track_h - half), LV_PART_KNOB);
+      lv_obj_set_style_pad_top(row.slider, -(track_h / 4), LV_PART_KNOB);
+      lv_obj_set_style_pad_bottom(row.slider, -(track_h / 4), LV_PART_KNOB);
+      lv_slider_set_range(row.slider, 2000, 6500);
     } else {
       // Corners, handle and shortest fill as in Home Assistant's 42 px control slider. The fill keeps
       // the track's radius: a smaller one makes LVGL draw the fill into its own full-size buffer on
@@ -280,16 +301,20 @@ inline void strip_resize(Row &row, int width) {
   const int title_x = static_cast<int>(lv_obj_get_x(row.title));
   lv_obj_set_width(row.title, std::max(1, width - title_x - inset - ui::px(42)));
   lv_obj_align(row.value, LV_ALIGN_TOP_RIGHT, -inset, ui::px(5));
-  if (row.index < 2) {
-    const int h = lv_obj_get_height(row.ends[0]), span = track_w - h;
+  if (row.index == 0) {
+    const int h = row.track_h, span = track_w - h;
     lv_obj_set_x(row.ends[1], inset + span);
-    const int segments = row.index == 0 ? 6 : 1;
-    for (int n = 0; n < segments; ++n) {
-      const int start = n * span / segments, end = (n + 1) * span / segments;
+    for (int n = 0; n < 6; ++n) {
+      const int start = n * span / 6, end = (n + 1) * span / 6;
       lv_obj_set_x(row.stripes[n], inset + h / 2 + start);
       lv_obj_set_width(row.stripes[n], end - start);
     }
+    lv_obj_set_pos(row.slider, inset + h / 2, row.track_y);
     lv_obj_set_width(row.slider, span);
+  } else if (row.index == 1) {
+    // Keep the title clear and the whole slider on its stored track line after reflow.
+    lv_obj_set_pos(row.slider, inset, row.track_y);
+    lv_obj_set_size(row.slider, track_w, row.track_h);
   } else {
     const int value = lv_slider_get_value(row.slider);
     lv_obj_set_width(row.slider, track_w);
