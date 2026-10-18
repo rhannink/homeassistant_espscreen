@@ -218,37 +218,29 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
     lv_obj_remove_flag(row.slider, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_ext_click_area(row.slider, ui::px(large ? 12 : 8));
     if (i < 2) {
-      // Hue keeps its segmented spectrum; temperature uses LVGL's own track so its knob and
-      // warm-to-cool gradient share exactly the same geometry and vertical center.
-      int slider_x = track_x + radius;
-      int slider_w = track_w - track_h;
+      // The knob travels between the centres of the two round ends.
+      // The temperature gradient is one continuous rounded pill. Separate end caps make its cool
+      // end look like a second white slider handle on short landscape screens.
       if (i == 0) {
         row.ends[0] = round_end(row.box, track_x, track_y, track_h, RAINBOW[0]);
         row.ends[1] = round_end(row.box, track_x + track_w - track_h, track_y, track_h, RAINBOW[6]);
-        const int span = track_w - track_h;
-        for (unsigned n = 0; n < 6; ++n) {
-          const int start = n * span / 6, end = (n + 1) * span / 6;
-          auto *stripe = row.stripes[n] = plain(row.box, track_x + radius + start, track_y, end - start, track_h);
-          lv_obj_set_style_bg_opa(stripe, LV_OPA_COVER, 0);
-          lv_obj_set_style_bg_color(stripe, lv_color_hex(RAINBOW[n]), 0);
-          lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(RAINBOW[n + 1]), 0);
-          lv_obj_set_style_bg_grad_dir(stripe, LV_GRAD_DIR_HOR, 0);
-        }
-      } else {
-        slider_x = track_x;
-        slider_w = track_w;
       }
-      lv_obj_set_pos(row.slider, slider_x, track_y);
-      lv_obj_set_size(row.slider, slider_w, track_h);
-      if (i == 1) {
-        lv_obj_set_style_bg_opa(row.slider, LV_OPA_COVER, LV_PART_MAIN);
-        lv_obj_set_style_bg_color(row.slider, lv_color_hex(WARM), LV_PART_MAIN);
-        lv_obj_set_style_bg_grad_color(row.slider, lv_color_hex(COOL), LV_PART_MAIN);
-        lv_obj_set_style_bg_grad_dir(row.slider, LV_GRAD_DIR_HOR, LV_PART_MAIN);
-        lv_obj_set_style_radius(row.slider, LV_RADIUS_CIRCLE, LV_PART_MAIN);
-      } else {
-        lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_MAIN);
+      unsigned segments = i == 0 ? 6 : 1;
+      int span = track_w - track_h;
+      for (unsigned n = 0; n < segments; ++n) {
+        int start = n * span / segments, end = (n + 1) * span / segments;
+        const int stripe_x = i == 0 ? track_x + radius + start : track_x;
+        const int stripe_w = i == 0 ? end - start : track_w;
+        auto *stripe = row.stripes[n] = plain(row.box, stripe_x, track_y, stripe_w, track_h);
+        lv_obj_set_style_bg_opa(stripe, LV_OPA_COVER, 0);
+        lv_obj_set_style_bg_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n] : WARM), 0);
+        lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n + 1] : COOL), 0);
+        lv_obj_set_style_bg_grad_dir(stripe, LV_GRAD_DIR_HOR, 0);
+        if (i == 1) lv_obj_set_style_radius(stripe, radius, 0);
       }
+      lv_obj_move_foreground(row.slider);
+      lv_obj_set_pos(row.slider, track_x + radius, track_y); lv_obj_set_size(row.slider, span, track_h);
+      lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_MAIN);
       lv_obj_set_style_bg_opa(row.slider, LV_OPA_TRANSP, LV_PART_INDICATOR);
       lv_obj_set_style_bg_opa(row.slider, LV_OPA_COVER, LV_PART_KNOB);
       lv_obj_set_style_radius(row.slider, LV_RADIUS_CIRCLE, LV_PART_KNOB);
@@ -299,18 +291,19 @@ inline void strip_resize(Row &row, int width) {
     const int h = lv_obj_get_height(row.slider), span = track_w - h;
     if (row.index == 0) {
       lv_obj_set_x(row.ends[1], inset + span);
-      for (int n = 0; n < 6; ++n) {
-        const int start = n * span / 6, end = (n + 1) * span / 6;
-        lv_obj_set_x(row.stripes[n], inset + h / 2 + start);
-        lv_obj_set_width(row.stripes[n], end - start);
-      }
-      lv_obj_set_x(row.slider, inset + h / 2);
-      lv_obj_set_width(row.slider, span);
     } else {
-      // Keep the temperature gradient on the LVGL slider's main part after card reflow.
-      lv_obj_set_pos(row.slider, inset, lv_obj_get_y(row.slider));
-      lv_obj_set_width(row.slider, track_w);
+      lv_obj_set_pos(row.stripes[0], inset, lv_obj_get_y(row.slider));
+      lv_obj_set_width(row.stripes[0], track_w);
+      lv_obj_set_style_radius(row.stripes[0], h / 2, 0);
+      lv_obj_set_x(row.slider, inset + h / 2);
     }
+    const int segments = row.index == 0 ? 6 : 0;
+    for (int n = 0; n < segments; ++n) {
+      const int start = n * span / segments, end = (n + 1) * span / segments;
+      lv_obj_set_x(row.stripes[n], inset + h / 2 + start);
+      lv_obj_set_width(row.stripes[n], end - start);
+    }
+    lv_obj_set_width(row.slider, span);
   } else {
     const int value = lv_slider_get_value(row.slider);
     lv_obj_set_width(row.slider, track_w);
