@@ -219,17 +219,24 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
     lv_obj_set_ext_click_area(row.slider, ui::px(large ? 12 : 8));
     if (i < 2) {
       // The knob travels between the centres of the two round ends.
-      row.ends[0] = round_end(row.box, track_x, track_y, track_h, i == 0 ? RAINBOW[0] : WARM);
-      row.ends[1] = round_end(row.box, track_x + track_w - track_h, track_y, track_h, i == 0 ? RAINBOW[6] : COOL);
+      // The temperature gradient is one continuous rounded pill. Separate end caps make its cool
+      // end look like a second white slider handle on short landscape screens.
+      if (i == 0) {
+        row.ends[0] = round_end(row.box, track_x, track_y, track_h, RAINBOW[0]);
+        row.ends[1] = round_end(row.box, track_x + track_w - track_h, track_y, track_h, RAINBOW[6]);
+      }
       unsigned segments = i == 0 ? 6 : 1;
       int span = track_w - track_h;
       for (unsigned n = 0; n < segments; ++n) {
         int start = n * span / segments, end = (n + 1) * span / segments;
-        auto *stripe = row.stripes[n] = plain(row.box, track_x + radius + start, track_y, end - start, track_h);
+        const int stripe_x = i == 0 ? track_x + radius + start : track_x;
+        const int stripe_w = i == 0 ? end - start : track_w;
+        auto *stripe = row.stripes[n] = plain(row.box, stripe_x, track_y, stripe_w, track_h);
         lv_obj_set_style_bg_opa(stripe, LV_OPA_COVER, 0);
         lv_obj_set_style_bg_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n] : WARM), 0);
         lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n + 1] : COOL), 0);
         lv_obj_set_style_bg_grad_dir(stripe, LV_GRAD_DIR_HOR, 0);
+        if (i == 1) lv_obj_set_style_radius(stripe, radius, 0);
       }
       lv_obj_move_foreground(row.slider);
       lv_obj_set_pos(row.slider, track_x + radius, track_y); lv_obj_set_size(row.slider, span, track_h);
@@ -281,9 +288,16 @@ inline void strip_resize(Row &row, int width) {
   lv_obj_set_width(row.title, std::max(1, width - title_x - inset - ui::px(42)));
   lv_obj_align(row.value, LV_ALIGN_TOP_RIGHT, -inset, ui::px(5));
   if (row.index < 2) {
-    const int h = lv_obj_get_height(row.ends[0]), span = track_w - h;
-    lv_obj_set_x(row.ends[1], inset + span);
-    const int segments = row.index == 0 ? 6 : 1;
+    const int h = lv_obj_get_height(row.slider), span = track_w - h;
+    if (row.index == 0) {
+      lv_obj_set_x(row.ends[1], inset + span);
+    } else {
+      lv_obj_set_pos(row.stripes[0], inset, lv_obj_get_y(row.slider));
+      lv_obj_set_width(row.stripes[0], track_w);
+      lv_obj_set_style_radius(row.stripes[0], h / 2, 0);
+      lv_obj_set_x(row.slider, inset + h / 2);
+    }
+    const int segments = row.index == 0 ? 6 : 0;
     for (int n = 0; n < segments; ++n) {
       const int start = n * span / segments, end = (n + 1) * span / segments;
       lv_obj_set_x(row.stripes[n], inset + h / 2 + start);
