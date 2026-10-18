@@ -236,7 +236,7 @@ inline void setup(lv_obj_t *parent, const lv_font_t *font, int width, int height
         lv_obj_set_style_bg_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n] : WARM), 0);
         lv_obj_set_style_bg_grad_color(stripe, lv_color_hex(i == 0 ? RAINBOW[n + 1] : COOL), 0);
         lv_obj_set_style_bg_grad_dir(stripe, LV_GRAD_DIR_HOR, 0);
-        if (i == 1) lv_obj_set_style_radius(stripe, std::max(1, track_h / 12), 0);
+        if (i == 1) lv_obj_set_style_radius(stripe, radius, 0);
       }
       lv_obj_move_foreground(row.slider);
       lv_obj_set_pos(row.slider, track_x + radius, track_y); lv_obj_set_size(row.slider, span, track_h);
@@ -294,7 +294,7 @@ inline void strip_resize(Row &row, int width) {
     } else {
       lv_obj_set_pos(row.stripes[0], inset, lv_obj_get_y(row.slider));
       lv_obj_set_width(row.stripes[0], track_w);
-      lv_obj_set_style_radius(row.stripes[0], std::max(1, h / 12), 0);
+      lv_obj_set_style_radius(row.stripes[0], h / 2, 0);
       lv_obj_set_x(row.slider, inset + h / 2);
     }
     const int segments = row.index == 0 ? 6 : 0;
