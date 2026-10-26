@@ -87,3 +87,31 @@ display:
       height: 480
     update_interval: never
     auto_clear_enabled: false
+
+# Two-bit antialiasing keeps every shared font and glyph while saving flash.
+# Text sizes still come exclusively from the compact look.
+font:
+  - id: !extend headline
+    bpp: 2
+  - id: !extend watch_value
+    bpp: 2
+  - id: !extend clock_digits
+    bpp: 2
+  - id: !extend display_digits
+    bpp: 2
+  - id: !extend bedside_digits
+    bpp: 2
+  - id: !extend setpoint_digits
+    bpp: 2
+  - id: !extend label
+    bpp: 2
+  - id: !extend sublabel
+    bpp: 2
+  - id: !extend sublabel_big
+    bpp: 2
+  - id: !extend brand_wordmark
+    bpp: 2
+
+# Leave warnings and errors available; verbose diagnosis can be enabled in an override.
+logger:
+  level: WARN
