@@ -2886,8 +2886,8 @@
  },
  "checkout/wt32sc01.yaml": {
   "alert": {
-   "line": 23,
-   "title_line": 30
+   "line": 19,
+   "title_line": 25
   },
   "battery": false,
   "board": "wt32sc01",
@@ -2910,19 +2910,19 @@
   "features": [],
   "firmware": "0.57.0",
   "fonts": {
-   "headline": 26,
-   "icon_home": 33,
-   "icon_mini": 25,
-   "label": 17,
-   "setpoint": 62,
-   "sublabel": 16,
-   "sublabel_big": 20,
-   "watch_icon": 17,
-   "watch_value": 37
+   "headline": 21,
+   "icon_home": 29,
+   "icon_mini": 21,
+   "label": 13,
+   "setpoint": 46,
+   "sublabel": 13,
+   "sublabel_big": 16,
+   "watch_icon": 14,
+   "watch_value": 25
   },
   "height": 320,
   "hotspot": false,
-  "look": "standard",
+  "look": "compact",
   "max_bar_items": 12,
   "max_pages": 24,
   "max_tiles": 128,
@@ -2932,8 +2932,8 @@
     "columns": 2,
     "height": 320,
     "max": [
-     3,
-     3
+     4,
+     5
     ],
     "min": [
      1,
@@ -2948,7 +2948,7 @@
     "height": 480,
     "max": [
      2,
-     6
+     8
     ],
     "min": [
      1,
@@ -2961,13 +2961,13 @@
   },
   "rows": 2,
   "spacing": {
-   "circle": 52,
-   "gap": 12,
-   "gap_y": 12,
-   "margin": 16,
-   "page_bar": 45,
-   "tile_pad": 12,
-   "top": 55
+   "circle": 42,
+   "gap": 7,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 42,
+   "tile_pad": 9,
+   "top": 42
   },
   "tier": "lite",
   "wide_slots": true,
@@ -7504,8 +7504,8 @@
  },
  "packages/wt32sc01.yaml": {
   "alert": {
-   "line": 23,
-   "title_line": 30
+   "line": 19,
+   "title_line": 25
   },
   "battery": false,
   "board": "wt32sc01",
@@ -7528,19 +7528,19 @@
   "features": [],
   "firmware": "0.57.0",
   "fonts": {
-   "headline": 26,
-   "icon_home": 33,
-   "icon_mini": 25,
-   "label": 17,
-   "setpoint": 62,
-   "sublabel": 16,
-   "sublabel_big": 20,
-   "watch_icon": 17,
-   "watch_value": 37
+   "headline": 21,
+   "icon_home": 29,
+   "icon_mini": 21,
+   "label": 13,
+   "setpoint": 46,
+   "sublabel": 13,
+   "sublabel_big": 16,
+   "watch_icon": 14,
+   "watch_value": 25
   },
   "height": 320,
   "hotspot": false,
-  "look": "standard",
+  "look": "compact",
   "max_bar_items": 12,
   "max_pages": 24,
   "max_tiles": 128,
@@ -7550,8 +7550,8 @@
     "columns": 2,
     "height": 320,
     "max": [
-     3,
-     3
+     4,
+     5
     ],
     "min": [
      1,
@@ -7566,7 +7566,7 @@
     "height": 480,
     "max": [
      2,
-     6
+     8
     ],
     "min": [
      1,
@@ -7579,13 +7579,13 @@
   },
   "rows": 2,
   "spacing": {
-   "circle": 52,
-   "gap": 12,
-   "gap_y": 12,
-   "margin": 16,
-   "page_bar": 45,
-   "tile_pad": 12,
-   "top": 55
+   "circle": 42,
+   "gap": 7,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 42,
+   "tile_pad": 9,
+   "top": 42
   },
   "tier": "lite",
   "wide_slots": true,
@@ -8834,8 +8834,8 @@
  },
  "wt32sc01": {
   "alert": {
-   "line": 23,
-   "title_line": 30
+   "line": 19,
+   "title_line": 25
   },
   "battery": false,
   "board": "wt32sc01",
@@ -8858,19 +8858,19 @@
   "features": [],
   "firmware": "0.57.0",
   "fonts": {
-   "headline": 26,
-   "icon_home": 33,
-   "icon_mini": 25,
-   "label": 17,
-   "setpoint": 62,
-   "sublabel": 16,
-   "sublabel_big": 20,
-   "watch_icon": 17,
-   "watch_value": 37
+   "headline": 21,
+   "icon_home": 29,
+   "icon_mini": 21,
+   "label": 13,
+   "setpoint": 46,
+   "sublabel": 13,
+   "sublabel_big": 16,
+   "watch_icon": 14,
+   "watch_value": 25
   },
   "height": 320,
   "hotspot": false,
-  "look": "standard",
+  "look": "compact",
   "max_bar_items": 12,
   "max_pages": 24,
   "max_tiles": 128,
@@ -8880,8 +8880,8 @@
     "columns": 2,
     "height": 320,
     "max": [
-     3,
-     3
+     4,
+     5
     ],
     "min": [
      1,
@@ -8896,7 +8896,7 @@
     "height": 480,
     "max": [
      2,
-     6
+     8
     ],
     "min": [
      1,
@@ -8909,13 +8909,13 @@
   },
   "rows": 2,
   "spacing": {
-   "circle": 52,
-   "gap": 12,
-   "gap_y": 12,
-   "margin": 16,
-   "page_bar": 45,
-   "tile_pad": 12,
-   "top": 55
+   "circle": 42,
+   "gap": 7,
+   "gap_y": 4,
+   "margin": 9,
+   "page_bar": 42,
+   "tile_pad": 9,
+   "top": 42
   },
   "tier": "lite",
   "wide_slots": true,

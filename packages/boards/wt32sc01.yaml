@@ -4,7 +4,7 @@
 packages:
   build: !include ../hardware/esp-idf.yaml
   flash: !include ../hardware/flash-4mb.yaml
-  look: !include ../looks/standard.yaml
+  look: !include ../looks/compact.yaml
   touch: !include ../features/capacitive-touch.yaml
   backlight: !include ../features/backlight.yaml
   self_test: !include ../features/self-test.yaml
