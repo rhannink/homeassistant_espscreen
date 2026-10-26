@@ -113,6 +113,12 @@ font:
   - id: !extend brand_wordmark
     bpp: 1
 
-# Leave warnings and errors available; verbose diagnosis can be enabled in an override.
+# Keep errors available; verbose diagnosis can be enabled in an override.
 logger:
-  level: WARN
+  level: ERROR
+  logs:
+    sensor: ERROR
+    text_sensor: ERROR
+    xpt2046: ERROR
+    homeassistant.sensor: ERROR
+    homeassistant.text_sensor: ERROR
