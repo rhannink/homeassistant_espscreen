@@ -2884,6 +2884,95 @@
   "wide_slots": false,
   "width": 720
  },
+ "checkout/wt32sc01.yaml": {
+  "alert": {
+   "line": 23,
+   "title_line": 30
+  },
+  "battery": false,
+  "board": "wt32sc01",
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.5,
+   "model": "WT32-SC01",
+   "name": "Wireless Tag",
+   "order": 24,
+   "settings": [],
+   "status": "experimental",
+   "touch": "FT63X6"
+  },
+  "chip": "ESP32",
+  "columns": 2,
+  "dimmable": true,
+  "dpi": 165,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 26,
+   "icon_home": 33,
+   "icon_mini": 25,
+   "label": 17,
+   "setpoint": 62,
+   "sublabel": 16,
+   "sublabel_big": 20,
+   "watch_icon": 17,
+   "watch_value": 37
+  },
+  "height": 320,
+  "hotspot": false,
+  "look": "standard",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [],
+  "orientations": {
+   "landscape": {
+    "columns": 2,
+    "height": 320,
+    "max": [
+     3,
+     3
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 2,
+    "width": 480
+   },
+   "portrait": {
+    "columns": 1,
+    "height": 480,
+    "max": [
+     2,
+     6
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 3,
+    "width": 320
+   }
+  },
+  "rows": 2,
+  "spacing": {
+   "circle": 52,
+   "gap": 12,
+   "gap_y": 12,
+   "margin": 16,
+   "page_bar": 45,
+   "tile_pad": 12,
+   "top": 55
+  },
+  "tier": "lite",
+  "wide_slots": true,
+  "width": 480
+ },
  "crowpanel101": {
   "alert": {
    "line": 18,
@@ -7413,6 +7502,95 @@
   "wide_slots": false,
   "width": 720
  },
+ "packages/wt32sc01.yaml": {
+  "alert": {
+   "line": 23,
+   "title_line": 30
+  },
+  "battery": false,
+  "board": "wt32sc01",
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.5,
+   "model": "WT32-SC01",
+   "name": "Wireless Tag",
+   "order": 24,
+   "settings": [],
+   "status": "experimental",
+   "touch": "FT63X6"
+  },
+  "chip": "ESP32",
+  "columns": 2,
+  "dimmable": true,
+  "dpi": 165,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 26,
+   "icon_home": 33,
+   "icon_mini": 25,
+   "label": 17,
+   "setpoint": 62,
+   "sublabel": 16,
+   "sublabel_big": 20,
+   "watch_icon": 17,
+   "watch_value": 37
+  },
+  "height": 320,
+  "hotspot": false,
+  "look": "standard",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [],
+  "orientations": {
+   "landscape": {
+    "columns": 2,
+    "height": 320,
+    "max": [
+     3,
+     3
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 2,
+    "width": 480
+   },
+   "portrait": {
+    "columns": 1,
+    "height": 480,
+    "max": [
+     2,
+     6
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 3,
+    "width": 320
+   }
+  },
+  "rows": 2,
+  "spacing": {
+   "circle": 52,
+   "gap": 12,
+   "gap_y": 12,
+   "margin": 16,
+   "page_bar": 45,
+   "tile_pad": 12,
+   "top": 55
+  },
+  "tier": "lite",
+  "wide_slots": true,
+  "width": 480
+ },
  "reterminald1001": {
   "alert": {
    "line": 27,
@@ -8653,5 +8831,94 @@
   "tier": "full",
   "wide_slots": false,
   "width": 720
+ },
+ "wt32sc01": {
+  "alert": {
+   "line": 23,
+   "title_line": 30
+  },
+  "battery": false,
+  "board": "wt32sc01",
+  "can_standby": true,
+  "catalog": {
+   "calibrate": false,
+   "choices": {},
+   "inch": 3.5,
+   "model": "WT32-SC01",
+   "name": "Wireless Tag",
+   "order": 24,
+   "settings": [],
+   "status": "experimental",
+   "touch": "FT63X6"
+  },
+  "chip": "ESP32",
+  "columns": 2,
+  "dimmable": true,
+  "dpi": 165,
+  "features": [],
+  "firmware": "0.57.0",
+  "fonts": {
+   "headline": 26,
+   "icon_home": 33,
+   "icon_mini": 25,
+   "label": 17,
+   "setpoint": 62,
+   "sublabel": 16,
+   "sublabel_big": 20,
+   "watch_icon": 17,
+   "watch_value": 37
+  },
+  "height": 320,
+  "hotspot": false,
+  "look": "standard",
+  "max_bar_items": 12,
+  "max_pages": 24,
+  "max_tiles": 128,
+  "modules": [],
+  "orientations": {
+   "landscape": {
+    "columns": 2,
+    "height": 320,
+    "max": [
+     3,
+     3
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 90,
+    "rows": 2,
+    "width": 480
+   },
+   "portrait": {
+    "columns": 1,
+    "height": 480,
+    "max": [
+     2,
+     6
+    ],
+    "min": [
+     1,
+     1
+    ],
+    "rotation": 180,
+    "rows": 3,
+    "width": 320
+   }
+  },
+  "rows": 2,
+  "spacing": {
+   "circle": 52,
+   "gap": 12,
+   "gap_y": 12,
+   "margin": 16,
+   "page_bar": 45,
+   "tile_pad": 12,
+   "top": 55
+  },
+  "tier": "lite",
+  "wide_slots": true,
+  "width": 480
  }
 }

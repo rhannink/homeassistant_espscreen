@@ -27,6 +27,11 @@ ROOT = profiles.ROOT
 REPO = 'https://github.com/MaxGramser/homeassistant_espscreen'
 
 
+def repository(board):
+    # Boards maintained in this fork must load its components and fonts together.
+    return 'https://github.com/rhannink/homeassistant_espscreen' if board in {'lilygos3long', 'wt32sc01'} else REPO
+
+
 def components(board):
     """The components of this repository a board's firmware needs: smart_display, and before it every other component
     under components/ that the board's files name, as a platform or as a block of its own (in the order they are
@@ -56,7 +61,7 @@ substitutions:
   # The branch the components and the fonts come from: main, or dev for a screen of the app's dev channel, which
   # writes GITHUB_REF into the screen's own YAML next to the `ref:` of this package (docs/RELEASING.md, "Testing dev").
   GITHUB_REF: "main"
-  FONT_DIR: "https://raw.githubusercontent.com/MaxGramser/homeassistant_espscreen/${{GITHUB_REF}}/fonts"
+  FONT_DIR: "https://raw.githubusercontent.com/{repository(board).removeprefix('https://github.com/')}/${{GITHUB_REF}}/fonts"
 
 packages:
   core: !include core.yaml
@@ -65,7 +70,7 @@ packages:
 external_components:
   - source:
       type: git
-      url: {REPO}.git
+      url: {repository(board)}.git
       ref: ${{GITHUB_REF}}
       path: components
     refresh: 0s
