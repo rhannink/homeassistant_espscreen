@@ -23,6 +23,10 @@
     },
     {
       "dpi": 165,
+      "look": "compact"
+    },
+    {
+      "dpi": 165,
       "look": "standard"
     },
     {
