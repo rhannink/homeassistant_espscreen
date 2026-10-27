@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Improve WT32-SC01 text quality with four-bit text fonts; other icon fonts stay
+  compact to fit the board's 4 MB flash.
+
 - Add experimental original WT32-SC01 support (ESP32-WROVER, ST7796 SPI, FT6336U touch,
   dimmable backlight and wide 4 MB update slots), with a 2 by 2 landscape grid.
 
