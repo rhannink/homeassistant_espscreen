@@ -1,7 +1,7 @@
 // The firmware's sizes in the editor's mockup (app 0.4.32): ui_scale.h's px() and the -/+ pill of a card's controls
 // (runtime_tiles panel_metrics, stepper_keys), computed the same way from the board's density and look, so the mockup
 // draws them at the size the glass does instead of sizes of its own.
-type Shape = { width?: number; height?: number; dpi?: number; look?: string;
+type Shape = { width?: number; height?: number; columns?: number; rows?: number; dpi?: number; look?: string;
   fonts?: { watch_value?: number; sublabel_big?: number; sublabel?: number; icon_mini?: number; label?: number; headline?: number; watch_icon?: number; setpoint?: number };
   spacing?: Spacing };
 // The glass's grid (boards.json "spacing"): its margin, the gaps between columns and between rows, a card's padding, where
@@ -51,9 +51,12 @@ export function widestSetpoint(a: Record<string, any>) {
 /** A thermostat's mode bar in a card's panel (climate_tile::bar_room and bar_width, the panel's key as a finger:
  * runtime_tiles panel_metrics, the taller card's finger, panel_metrics_full): how many modes fit in `reach` glass pixels
  * and how wide the bar is. `place`: beside the name on a card of one row, over the card on a taller one or the page. */
-export function modeBar(shape: Shape, place: "row" | "tall" | "full", reach: number, modes: number) {
+export function modeBar(shape: Shape, place: "row" | "tall" | "full", reach: number, modes: number, pageRows = shape.rows ?? 1, paged = false) {
   const { large, compact, px } = uiScale(shape);
-  const finger = place === "tall" ? Math.max(touchMin(shape), px(large ? 48 : 34)) : place === "full" ? px(large ? 84 : 44) : px(large ? 46 : 34);
+  const across = shape.columns ?? 1, edges = 2 * frameOf(shape).tile_pad + 2;
+  const fullWidth = cardContent(shape, across, across), fullHeight = cardHeight(shape, pageRows, pageRows, 0, paged) - edges;
+  const fullBig = Math.max(fullWidth, fullHeight) >= Math.floor(((shape.dpi ?? (compact ? 143 : 170)) * 56 + 12) / 25);
+  const finger = place === "tall" ? Math.max(touchMin(shape), px(large ? 48 : 34)) : place === "full" ? px(fullBig ? 84 : 44) : px(large ? 46 : 34);
   const inset = Math.max(2, px(large ? 4 : 3));
   reach = Math.min(reach, px(compact ? 620 : 740));
   const fit = modes >= 2 ? Math.min(modes, Math.floor((reach - 2 * inset) / finger)) : 0;
@@ -101,7 +104,7 @@ export const lineOf = (size: number) => Math.round(size * 1.172);
  * (text_width), close enough to choose between a board's faces as it does. */
 export const textWidth = (text: string, size: number) => Math.round([...text].reduce((sum, ch) =>
   sum + (/\d/.test(ch) ? 0.56 : ch === "°" ? 0.37 : ch === "-" ? 0.33 : ch === "." || ch === "," ? 0.27 : ch === " " ? 0.25
-    : /[iljtf!|:;']/.test(ch) ? 0.27 : /[mwMW@]/.test(ch) ? 0.85 : /[A-Z]/.test(ch) ? 0.64 : 0.53), 0) * size);
+    : /[iljtf!|:;']/.test(ch) ? 0.27 : /[mwMW@]/.test(ch) ? 0.85 : /[A-Z]/.test(ch) ? 0.67 : 0.53), 0) * size);
 
 // What the setpoint's digits carry (packages/core.yaml setpoint_digits); a word keeps the card's own faces.
 const SETPOINT_GLYPHS = new Set([..."-.,°%0123456789"]);

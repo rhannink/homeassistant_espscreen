@@ -279,7 +279,7 @@ class Grid(unittest.TestCase):
                                    'o': core.screen_options({'entity': 'switch.parity', 'options': {'size': size}}, {}, 'on') or {}}]
             sizes = ['single', 'full'] + (['wide'] if shape['columns'] >= 2 else [])
             screens.append({'key': key, 'width': shape['width'], 'height': shape['height'], 'columns': shape['columns'],
-                            'rows': shape['rows'], 'dpi': shape['dpi'], 'layouts': [{'key': size, 'tiles': tiles(size)} for size in sizes]})
+                            'rows': shape['rows'], 'dpi': shape['dpi'], 'look': shape['look'], 'layouts': [{'key': size, 'tiles': tiles(size)} for size in sizes]})
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'screens.json'
             path.write_text(json.dumps(screens))
@@ -316,19 +316,11 @@ console.log(JSON.stringify(DATA.shapes.map((shape: any) => ({
                 cell = (full - (columns - 1) * gap) // columns
                 self.assertEqual(ts['rest'], wide - cell - gap - edges, f'{key}: restContent')
 
-    # A card over the whole page takes its keys by the height of a cell (layout_panel: panel_metrics_full(w.base_height
-    # > 80)), and the editor knows no cell heights: its mockup takes them by the look (modeBar "full"), which is the same
-    # answer on every board but the Hosyond, whose compact look has cells of 88 and 105 pixels. Known, and kept here so
-    # a fix shows up: the editor needs the board's cell height for it (the top bar's band and the page bar), which
-    # boards.json does not carry yet.
-    KNOWN = {'hosyond40-landscape', 'hosyond40-portrait'}
-
     def test_a_full_cards_finger_follows_its_cell(self):
         for (key, _, shape), ts in zip(SHAPES, self.ts):
-            big = self.cards[(key, 'single')][1] > 80
-            if key in self.KNOWN:
-                self.assertNotEqual(ts['full'], ts['px'][1 if big else 0], f'{key} is fixed: take it out of Grid.KNOWN')
-                continue
+            edges = 2 * shape['spacing']['tile_pad'] + 2
+            full = self.cards[(key, 'full')]
+            big = max(full[0] - edges, full[1] - edges) >= (shape['dpi'] * 56 + 12) // 25
             self.assertEqual(ts['full'], ts['px'][1 if big else 0], f'{key}: the full card keys are panel_metrics_full({big})')
 
 
@@ -389,7 +381,7 @@ class WatchCard(unittest.TestCase):
                                 layouts.append({'key': str(len(cls.cases)), 'pages': pages, 'tiles': tiles})
                                 cls.cases.append(case)
                 screens.append({'key': f'{key}-{down}', 'width': shape['width'], 'height': shape['height'],
-                                'columns': shape['columns'], 'rows': down, 'dpi': shape['dpi'], 'layouts': layouts})
+                                'columns': shape['columns'], 'rows': down, 'dpi': shape['dpi'], 'look': shape['look'], 'layouts': layouts})
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'screens.json'
             path.write_text(json.dumps(screens))
