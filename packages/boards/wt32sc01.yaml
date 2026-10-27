@@ -89,7 +89,7 @@ display:
     update_interval: never
     auto_clear_enabled: false
 
-# One-bit glyphs keep every shared font and character within the 4 MB flash budget.
+# Antialias tile text, clock digits and small status icons within the 4 MB budget.
 # Text sizes still come exclusively from the compact look.
 font:
   - id: !extend headline
@@ -97,7 +97,7 @@ font:
   - id: !extend watch_value
     bpp: 1
   - id: !extend clock_digits
-    bpp: 1
+    bpp: 2
   - id: !extend display_digits
     bpp: 1
   - id: !extend bedside_digits
@@ -105,13 +105,17 @@ font:
   - id: !extend setpoint_digits
     bpp: 1
   - id: !extend label
-    bpp: 1
+    bpp: 2
   - id: !extend sublabel
-    bpp: 1
+    bpp: 2
   - id: !extend sublabel_big
     bpp: 1
   - id: !extend brand_wordmark
     bpp: 1
+  - id: !extend materialdesign_icons_back
+    bpp: 2
+  - id: !extend materialdesign_icons_status
+    bpp: 2
 
 # Keep errors available; verbose diagnosis can be enabled in an override.
 logger:
