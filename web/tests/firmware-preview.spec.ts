@@ -18,7 +18,7 @@ function response(name: string, _result?: unknown, _types?: unknown, args?: unkn
 
 const firmware = {
   HEAPU8: new Uint8Array(800 * 800 * 4),
-  _preview_init: vi.fn(() => 1), _preview_time: vi.fn(),
+  _preview_init: vi.fn(() => 1), _preview_look: vi.fn(), _preview_time: vi.fn(),
   _preview_render: vi.fn(), _preview_frame: vi.fn(() => 0),
   _preview_image_buffer: vi.fn(() => 128), _preview_image_ready: vi.fn(() => 1),
   _preview_touch: vi.fn(), _preview_cancel: vi.fn(), _preview_dark: vi.fn(), _preview_language: vi.fn(), ccall: vi.fn(response),
@@ -57,6 +57,11 @@ async function preview(width = 720, height = 720, extra: Record<string, unknown>
 }
 
 describe("Firmware preview transport", () => {
+  it("passes the selected look when displays share a density", async () => {
+    await preview(480, 320, { dpi: 165, look: "compact" });
+    expect(firmware._preview_look).toHaveBeenCalledWith(1);
+    expect(firmware._preview_init).toHaveBeenCalledWith(480, 320, 165, 2, 3);
+  });
   const screen = () => ({ id: 'text.test_panel', name: 'Test panel', online: true,
     settings: { owner: 'screen', keys: ['dark_mode', 'brightness'], values: { dark_mode: false, brightness: 80 }, unavailable: [] } });
   function settingsModule() {

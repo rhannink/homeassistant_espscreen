@@ -65,6 +65,8 @@ void preview_pictures(int on) {
   runtime_tiles::camera_live = {};
   dirty = true;
 }
+static int selected_look = 0; // 0: legacy automatic choice, 1: compact, 2: standard.
+void preview_look(int look) { selected_look = look; }
 int preview_init(int w, int h, int display_dpi, int columns, int rows) {
   if (display || w < 160 || h < 160 || w > 2560 || h > 2560 || columns < 1 || rows < 1 ||
       columns > 8 || rows > 8 || columns * rows > 64) return 0;
@@ -77,7 +79,7 @@ int preview_init(int w, int h, int display_dpi, int columns, int rows) {
   lv_display_set_color_format(display, LV_COLOR_FORMAT_XRGB8888);
   lv_display_set_flush_cb(display, flush);
   lv_display_set_buffers(display, draw_buffer.data(), nullptr, draw_buffer.size() * sizeof(uint32_t), LV_DISPLAY_RENDER_MODE_FULL);
-  firmware = setup_firmware_ui(lv_screen_active(), display_dpi);
+  firmware = setup_firmware_ui(lv_screen_active(), display_dpi, selected_look);
   if (!firmware.room) return 0;
   runtime_tiles::grid = {size_t(columns), size_t(rows)};
   ui::configure(display_dpi, firmware.look);
@@ -221,6 +223,7 @@ const char *preview_layout() {
   doc["height"] = lv_display_get_vertical_resolution(nullptr);
   doc["columns"] = runtime_tiles::grid.columns;
   doc["rows"] = runtime_tiles::grid.rows;
+  doc["look"] = firmware.look;
   auto cards = doc["cards"].to<JsonArray>();
   auto objects = doc["objects"].to<JsonArray>();
   int next = 0;

@@ -10,6 +10,7 @@ for (const [name, board] of Object.entries(boards).filter(([key]) => key.startsW
   for (const [orientation, shape] of Object.entries(board.orientations)) {
     const { width, height, columns, rows } = shape;
     const module = await createModule({ wasmBinary });
+    module._preview_look(board.look === 'compact' ? 1 : 2);
     assert.equal(module._preview_init(width, height, board.dpi, columns, rows), 1, `${name} ${orientation}`);
     const receive = connection(module);
     const count = columns * rows;
@@ -19,6 +20,8 @@ for (const [name, board] of Object.entries(boards).filter(([key]) => key.startsW
     module._preview_time(1000, 1789401840, 0);
     module._preview_render();
     const info = JSON.parse(module.ccall('preview_diagnostics', 'string', [], []));
+    const layout = JSON.parse(module.ccall('preview_layout', 'string', [], []));
+    assert.equal(layout.look, board.look, `${name} ${orientation}: the board's look is selected`);
     assert.equal(info.tiles.length, count, 'every grid cell renders');
     for (const tile of info.tiles) {
       assert.ok(tile.width > 0 && tile.height > 0 && tile.x >= 0 && tile.y >= 0);

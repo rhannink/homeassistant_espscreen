@@ -1,0 +1,109 @@
+# Original Wireless Tag WT32-SC01, ESP32-WROVER-B, 4 MB flash and 8 MB PSRAM.
+# ST7796S SPI display and FT6336U capacitive touch. Not the ESP32-S3 SC01 Plus.
+# Pin source: qiuxiaochao/WT32-SC01 sdkconfig.defaults; see docs/WT32_SC01.md.
+packages:
+  build: !include ../hardware/esp-idf.yaml
+  flash: !include ../hardware/flash-4mb.yaml
+  look: !include ../looks/compact.yaml
+  touch: !include ../features/capacitive-touch.yaml
+  backlight: !include ../features/backlight.yaml
+  self_test: !include ../features/self-test.yaml
+
+substitutions:
+  BOARD_ID: "wt32sc01"
+  DEVICE_NAME: "wt32sc01-new"
+  DEVICE_FRIENDLY_NAME: "My WT32-SC01"
+  PANEL_W: "320"
+  PANEL_H: "480"
+  DISPLAY_DPI: "165.000"
+  ROTATION_LANDSCAPE: "90"
+  GRID_COLS: "2"
+  GRID_ROWS: "2"
+  GRID_COLS_PORTRAIT: "1"
+  GRID_ROWS_PORTRAIT: "3"
+  SCREEN_MAX_TILES: "128"
+  SCREEN_MAX_PAGES: "24"
+  SCREEN_MAX_BAR_ITEMS: "12"
+  # Keep the 4 MB flash budget conservative, even though this board has PSRAM.
+  BEDSIDE_OWN_DIGITS: "0"
+  FONT_ICON_BPP: 1
+  LVGL_BUFFER_SIZE: "12%"
+  DISPLAY_MODEL: "ST7796"
+  DISPLAY_DATA_RATE: "40MHz"
+  DISPLAY_INVERT_COLORS: "false"
+  BACKLIGHT_FREQUENCY: "1000Hz"
+  TOUCH_TEST_READY_LOG: "FT6336U touch test ready; no tile actions"
+
+esp32:
+  board: esp-wrover-kit
+  variant: esp32
+  flash_size: 4MB
+  cpu_frequency: 240MHz
+  framework:
+    advanced:
+      sram1_as_iram: true
+
+psram:
+  speed: 80MHz
+
+spi:
+  - id: lcd
+    clk_pin: GPIO14
+    mosi_pin: GPIO13
+
+i2c:
+  id: touch_bus
+  sda: GPIO18
+  scl: GPIO19
+  frequency: 100kHz
+
+output:
+  - platform: ledc
+    id: gpio_backlight_pwm
+    pin: GPIO23
+    frequency: ${BACKLIGHT_FREQUENCY}
+
+# Polling avoids assuming an interrupt connection across board revisions.
+# Coordinates stay in native portrait space. LVGL rotates display and touch together.
+touchscreen:
+  - platform: ft63x6
+    id: ts_touch
+    i2c_id: touch_bus
+    display: my_display
+    update_interval: 20ms
+
+display:
+  - platform: mipi_spi
+    id: my_display
+    spi_id: lcd
+    model: ${DISPLAY_MODEL}
+    data_rate: ${DISPLAY_DATA_RATE}
+    cs_pin: GPIO15
+    dc_pin: GPIO21
+    reset_pin: GPIO22
+    color_order: BGR
+    invert_colors: ${DISPLAY_INVERT_COLORS}
+    dimensions:
+      width: 320
+      height: 480
+    update_interval: never
+    auto_clear_enabled: false
+
+# Retain the shared 4-bit text fonts; the large clock and most icons use fewer bits.
+font:
+  - id: !extend display_digits
+    bpp: 2
+  - id: !extend materialdesign_icons_back
+    bpp: 2
+  - id: !extend materialdesign_icons_status
+    bpp: 2
+
+# Keep errors available; verbose diagnosis can be enabled in an override.
+logger:
+  level: ERROR
+  logs:
+    sensor: ERROR
+    text_sensor: ERROR
+    xpt2046: ERROR
+    homeassistant.sensor: ERROR
+    homeassistant.text_sensor: ERROR

@@ -25,6 +25,7 @@ ESPHome Device Builder is optional:
 | Waveshare 4B, 4 inch (experimental) | ESP32-S3-Touch-LCD-4B, 480×480, ST7701S and GT911 ([details](WAVESHARE4B.md)) |
 | Waveshare, 3.5 inch (new) | ESP32-S3-Touch-LCD-3.5, 480×320, ST7796 and FT6336 ([details](WAVESHARE35.md)) |
 | Hosyond, 4 inch (experimental) | ESP32-32E 4.0 inch (E32R40T), 480×320, ST7796 and XPT2046 ([details](HOSYOND40.md)) |
+| Wireless Tag WT32-SC01, 3.5 inch (experimental) | 480 × 320, 2 × 2 tiles; ESP32-WROVER, ST7796 SPI, FT6336U capacitive touch and dimmable backlight ([details](WT32_SC01.md)); hardware acceptance pending |
 | Guition, 3.5 inch (new) | JC3248W535, 480×320, AXS15231B QSPI and AXS15231B touch ([details](JC3248W535.md)) |
 | Guition, 10.1 inch (new) | JC8012P4A1, 1280×800, JD9365 MIPI-DSI and GSL3680, ESP32-P4 ([details](JC8012P4A1.md)) |
 | Guition, 10.1 inch V2 (experimental) | JC8012P4A1 V2, 1280×800, JD9365 MIPI-DSI and GSL3680, early ESP32-P4 with the newer LCD ([details](JC8012P4A1.md)) |

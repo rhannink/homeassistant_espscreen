@@ -178,3 +178,9 @@ lilygos3long:
   name: LilyGO
   model: T-Display-S3-Long
   status: experimental
+
+wt32sc01:
+  file: wt32sc01.yaml
+  name: Wireless Tag
+  model: WT32-SC01
+  status: experimental

@@ -29,7 +29,8 @@ const glass = computed(() => Number(canvas.deviceStyle["--glass"]) || 1);
 const bar = computed(() => {
   const shape = doc.screenShape, across = doc.documentGrid?.columns ?? shape.columns;
   const reach = props.place === "row" ? restContent(shape, across, props.columns) : cardContent(shape, across, props.place === "full" ? across : props.columns);
-  return modeBar(shape, props.place, reach, barKeys(props.a, props.mode, 6, props.domain).length);
+  return modeBar({ ...shape, columns: across }, props.place, reach, barKeys(props.a, props.mode, 6, props.domain).length,
+    doc.documentGrid?.rows ?? shape.rows, (doc.document?.pages.length ?? 0) > 1);
 });
 const keys = computed(() => barKeys(props.a, props.mode, bar.value.room, props.domain));
 const current = computed(() => thermostatMode(props.domain, props.mode, props.a));

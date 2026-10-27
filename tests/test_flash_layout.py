@@ -141,7 +141,8 @@ class TheBoards(unittest.TestCase):
         """The bridge is built for a plain ESP32; every board that takes the wide table is one."""
         for board in WIDE_BOARDS:
             blocks = [load(path.read_text()).get('esp32') or {} for path in profiles.chain(profiles.BOARDS[board])]
-            self.assertIn('esp32dev', [block.get('board') for block in blocks], board)
+            # Both targets use the original ESP32; the WROVER profile enables PSRAM in the main build.
+            self.assertTrue(any(block.get('board') in ('esp32dev', 'esp-wrover-kit') for block in blocks), board)
             self.assertIn('esp32', [str(block.get('variant')).lower() for block in blocks], board)
         for name in ('packages/bridge.yaml', 'checkout/bridge.yaml'):
             bridge = load((ROOT / name).read_text())

@@ -36,6 +36,7 @@
 - [WAVESHAREP4.md](WAVESHAREP4.md): the Waveshare ESP32-P4-86-Panel-ETH-2RO, 4 inch, 720 × 720, using Wi-Fi.
 - [WAVESHARE7.md](WAVESHARE7.md): the Waveshare ESP32-S3-Touch-LCD-7, and the backlight mod that makes it dim.
 - [WAVESHARE7B.md](WAVESHARE7B.md): the Waveshare ESP32-S3-Touch-LCD-7B.
+- [WT32_SC01.md](WT32_SC01.md): the original Wireless Tag WT32-SC01.
 - [HOSYOND40.md](HOSYOND40.md): the Hosyond 4-inch ESP32-32E.
 - [SUNTON8048S070.md](SUNTON8048S070.md): the Sunton ESP32-8048S070, 7 inch.
 

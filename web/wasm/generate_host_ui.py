@@ -46,11 +46,17 @@ def generate(dpi, look, profile):
     # Looks may add their own fonts. Let ESPHome merge the profile's font
     # packages, rather than assuming every font lives in the shared core.
     from esphome.components.packages import merge_config
+    from esphome.config_helpers import Extend
+    class FontLoader(yaml.SafeLoader):
+        pass
+    FontLoader.add_constructor('!extend', lambda loader, node: Extend(loader.construct_scalar(node)))
     font_config = {}
     for path in profiles.files(profile):
         resolved = profiles.resolve(path.read_text(), values)
         if re.search(r'^font:\n', resolved, re.M):
-            font_config = merge_config(font_config, yaml.safe_load(section(resolved, 'font')))
+            font_config = merge_config(font_config, yaml.load(section(resolved, 'font'), Loader=FontLoader))
+    from esphome.config import resolve_extend_remove
+    resolve_extend_remove(font_config)
     fonts = font_config['font']
     for font in fonts:
         for part in [font] + font.get('extras', []):  # the hearts come from a font of their own (firmware 0.36.0+)
@@ -184,15 +190,15 @@ if __name__ == '__main__':
         generate(dpi, look, profile)
     lines = ['// Generated firmware profile dispatch.', '#include "font.h"',
              'struct FirmwareUi { lv_obj_t *room, *time, *prev, *next, *number; void (*bind)(); void (*cells)(); const char *look; };']
-    if len({dpi for dpi, _, _ in targets}) != len(targets):
-        raise RuntimeError('Multiple looks at the same density: extend the host profile selector before building.')
     for dpi, look, _ in targets:
         ns = f'{look}_{dpi}'
         lines += [f'namespace {ns} {{', f'#include "{ns}/ui.h"', '}']
-    lines += ['static FirmwareUi setup_firmware_ui(lv_obj_t *root, int dpi) {']
-    for dpi, look, _ in targets:
+    # When a caller does not specify a look, preserve the historical selection: standard before compact.
+    lines += ['static FirmwareUi setup_firmware_ui(lv_obj_t *root, int dpi, int look) {']
+    for dpi, look, _ in sorted(targets, key=lambda item: (item[0], item[1] != 'standard')):
         ns = f'{look}_{dpi}'
-        lines += [f'if (dpi == {dpi}) {{ using namespace {ns}; setup_firmware_ui(root);',
+        look_id = 1 if look == 'compact' else 2
+        lines += [f'if (dpi == {dpi} && (look == 0 || look == {look_id})) {{ using namespace {ns}; setup_firmware_ui(root);',
                   f'return {{lbl_room, lbl_time, page_prev, page_next, page_number, bind_firmware_ui, setup_firmware_cells, "{look}"}}; }}']
     lines += ['return {};', '}']
     (OUT.parent / 'profiles.h').write_text('\n'.join(lines) + '\n')
