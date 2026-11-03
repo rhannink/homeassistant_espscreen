@@ -8637,7 +8637,9 @@ inline void render_full(Widgets &w,const Tile &t,bool custom,bool clock,bool sun
   if(!mini && !with_panel && !graph && !media){
     hide_extra(w);hide_panel(w);lv_obj_add_flag(w.slider,LV_OBJ_FLAG_HIDDEN);
     const lv_font_t *name_font=room_label?lv_obj_get_style_text_font(room_label,LV_PART_MAIN):w.title_font;
-    int name_h=lv_font_get_line_height(name_font),circle=ui::px(big?128:64);
+    int name_h=lv_font_get_line_height(name_font);
+    // On short glass the title and state still need their own lines; let the icon use the space left above them.
+    int circle=std::min(ui::px(big?128:64),std::max(1,content_h-gap-name_h-2-value_h));
     int block=circle+gap+name_h+2+value_h,top=std::max(0,(content_h-block)/2);
     lv_obj_set_size(w.circle,circle,circle);lv_obj_set_pos(w.circle,std::max(0,(content_w-circle)/2),top);
     tile_picture_place(w,t,circle,std::max(0,(content_w-circle)/2),top);
