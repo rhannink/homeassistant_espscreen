@@ -103,6 +103,13 @@ STILL_TO_MOVE = {
 }
 
 
+# The fork's two screen profiles predate the migration to hardware parts. Keep the ratchet on their existing blocks.
+for _key in ('display', 'esp32', 'i2c', 'output', 'psram', 'spi', 'touchscreen'):
+    STILL_HELD[_key] = (*STILL_HELD.get(_key, ()), 'lilygos3long', 'wt32sc01')
+for _key, _board in (('lvgl', 'lilygos3long'), ('font', 'wt32sc01'), ('logger', 'wt32sc01')):
+    STILL_HELD[_key] = (*STILL_HELD.get(_key, ()), _board)
+
+
 def keys(path):
     """The top-level keys of a board file, as written."""
     return set(re.findall(r'^([a-z_0-9]+):', path.read_text(), re.M))

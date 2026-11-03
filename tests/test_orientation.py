@@ -133,7 +133,7 @@ class CameraBoxes(unittest.TestCase):
             for way in core.ORIENTATIONS:
                 side = entry['orientations'][way]
                 if 'thumb' not in side['camera']:
-                    self.assertIsNone(camera_feed.box({'board': board, 'orientation': way}, 'thumb'))
+                    self.assertIsNone(picture_question.box({'board': board, 'orientation': way}, 'thumb'))
                     continue
                 thumb_w, thumb_h = side['camera']['thumb']
                 self.assertGreater(thumb_w, 0, f'{board} {way}')
