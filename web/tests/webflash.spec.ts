@@ -30,6 +30,7 @@ function fakeFlasher(chip = "ESP32") {
   const flasher = {
     createLoader: vi.fn((port: SerialPort) => ({ port })),
     connect: vi.fn(async () => chip),
+    readMac: vi.fn(async () => "aa:bb:cc:dd:ee:ff"),
     writeImage: vi.fn(async (_loader: unknown, _data: Uint8Array, erase: boolean, onErase: () => void, onProgress: (p: number) => void) => {
       if (erase) onErase();
       onProgress(0);
@@ -45,9 +46,10 @@ function fakeFlasher(chip = "ESP32") {
 
 let port: SerialPort;
 const requestPort = vi.fn();
+const getPorts = vi.fn(async (): Promise<SerialPort[]> => []);
 function secure(on = true, serial = true) {
   Object.defineProperty(window, "isSecureContext", { value: on, configurable: true });
-  if (serial) Object.defineProperty(navigator, "serial", { value: { requestPort }, configurable: true });
+  if (serial) Object.defineProperty(navigator, "serial", { value: { requestPort, getPorts }, configurable: true });
   else delete (navigator as any).serial;
 }
 // The add-on: the factory image at its relative URL, and an empty answer to everything else.
@@ -67,6 +69,8 @@ beforeEach(() => {
   port = fakePort();
   requestPort.mockReset();
   requestPort.mockImplementation(async () => port);
+  getPorts.mockReset();
+  getPorts.mockImplementation(async () => []);
   secure();
 });
 afterEach(() => {
@@ -123,6 +127,8 @@ describe("one installation from the browser", () => {
     expect(await flash.connect("ESP32-S3")).toBe(true);
     expect(flash.state.phase).toBe("waiting");
     expect(flash.state.chip).toBe("ESP32-S3");
+    // The board's MAC, read while the port is open: New screen asks the add-on whether Home Assistant knows the board.
+    expect(flash.state.mac).toBe("aa:bb:cc:dd:ee:ff");
     expect(await flash.install("hall.yaml", false)).toBe(true);
     expect(flash.state.phase).toBe("done");
     expect(flasher.writeImage.mock.calls[0][2]).toBe(false);
@@ -132,6 +138,18 @@ describe("one installation from the browser", () => {
     // Relative URLs, for Home Assistant's ingress path.
     expect(calls).toEqual([{ url: "api/firmware/profiles/hall.yaml/download", method: "GET" },
       { url: "api/firmware/profiles/hall.yaml/flashed", method: "POST" }]);
+  });
+
+  it("uses the one port the page was given before without the picker, and asks when there are several", async () => {
+    fakeFlasher("ESP32-P4");
+    addon(factoryImage(18, 0x2000));
+    const flash = useBrowserFlash();
+    getPorts.mockImplementation(async () => [port]);
+    expect(await flash.connect("ESP32-P4")).toBe(true);
+    expect(requestPort).not.toHaveBeenCalled();
+    getPorts.mockImplementation(async () => [port, fakePort()]);
+    expect(await flash.connect("ESP32-P4")).toBe(true);
+    expect(requestPort).toHaveBeenCalledOnce();
   });
 
   it("builds nothing when the picker is closed without a port, and says what to check", async () => {
@@ -285,6 +303,66 @@ describe("New screen from this browser", () => {
 });
 
 // Firmware & USB: reinstall or rescue a screen from this browser, keeping its settings (no erase).
+// Firmware & USB fills in the address a paired screen's Update goes to (PR #143), until the person types another.
+describe("Firmware & USB fills in a paired screen's address", () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  function pairedProfiles() {
+    const status = { available: true, ports: [], logs: [], job: null, wifi: { state: "ready" }, boards: {},
+      profiles: [{ file: "hall.yaml", host: "192.0.2.10" }, { file: "office.yaml", host: "192.0.2.20" }, { file: "spare.yaml" }] as { file: string; host?: string }[] };
+    const posted: any[] = [];
+    addon(factoryImage(0, 0x1000), (url, options) => {
+      if (url.endsWith("api/firmware")) return new Response(JSON.stringify(status));
+      if (url.includes("api/inventory")) return new Response(JSON.stringify({ screens: [], line: [] }));
+      if (url.endsWith("api/firmware/jobs") && options.method === "POST") {
+        posted.push(JSON.parse(options.body));
+        return new Response(JSON.stringify({ id: 4, by: "install", ...JSON.parse(options.body), state: "queued" }));
+      }
+      return null;
+    });
+    return { status, posted };
+  }
+  const hostField = (view: ReturnType<typeof mount>) => (view.get("#firmware-host").element as HTMLInputElement).value;
+
+  it("fills in and sends the chosen profile's address, and none for a profile it has none for", async () => {
+    const { posted } = pairedProfiles();
+    const view = mount(FirmwareView);
+    await flushPromises();
+    expect(hostField(view)).toBe("192.0.2.10");
+    await view.get("#firmware-file").setValue("office.yaml");
+    expect(hostField(view)).toBe("192.0.2.20");
+    await view.get("#firmware-install").trigger("click");
+    await flushPromises();
+    expect(posted).toEqual([{ file: "office.yaml", action: "install", target: "192.0.2.20" }]);
+    await view.get("#firmware-file").setValue("spare.yaml");
+    expect(hostField(view)).toBe("");
+  });
+
+  it("follows a new address until one is typed, which stays with its profile, an emptied field too", async () => {
+    const { status } = pairedProfiles();
+    const view = mount(FirmwareView);
+    await flushPromises();
+    status.profiles[0].host = "192.0.2.11";
+    await vi.advanceTimersByTimeAsync(3000);
+    await flushPromises();
+    expect(hostField(view)).toBe("192.0.2.11");
+    await view.get("#firmware-host").setValue("hall.example.test");
+    status.profiles[0].host = "192.0.2.12";
+    await vi.advanceTimersByTimeAsync(3000);
+    await flushPromises();
+    expect(hostField(view)).toBe("hall.example.test");
+    await view.get("#firmware-file").setValue("office.yaml");
+    expect(hostField(view)).toBe("192.0.2.20");
+    await view.get("#firmware-file").setValue("hall.yaml");
+    expect(hostField(view)).toBe("hall.example.test");
+    await view.get("#firmware-host").setValue("");
+    await vi.advanceTimersByTimeAsync(3000);
+    await flushPromises();
+    expect(hostField(view)).toBe("");
+  });
+});
+
 describe("Firmware & USB from this browser", () => {
   it("builds the profile, then writes it without erasing", async () => {
     const flasher = fakeFlasher("ESP32");

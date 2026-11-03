@@ -102,6 +102,7 @@ font:
 logger:
   level: ERROR
   logs:
+    esp-idf: ERROR
     sensor: ERROR
     text_sensor: ERROR
     xpt2046: ERROR
