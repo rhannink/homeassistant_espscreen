@@ -34,10 +34,10 @@ export function iconFace(look: CardLook, code: string, side: number, face = look
   return box && face !== look.iconMini && side > 0 && box.w * box.w + box.h * box.h > limit * limit ? look.iconMini : face;
 }
 
-/** The padding above and below every card of this grid (bind_card): 4 where the grid's first cell, as the card was
- * bound with the page bar, is 80 pixels high or less, else the board's TILE_PAD. Left and right always TILE_PAD. */
+/** The padding above and below a plain card: 4 on the compact look, or on a grid whose first cell with the page bar
+ * is at most 80 pixels high; otherwise the board's TILE_PAD. Left and right always use TILE_PAD. */
 export function cardPadY(shape: Shape, down: number) {
-  return cardHeight(shape, down, 1, 0, true) <= 80 ? 4 : frameOf(shape).tile_pad;
+  return uiScale(shape).compact || cardHeight(shape, down, 1, 0, true) <= 80 ? 4 : frameOf(shape).tile_pad;
 }
 
 /** Where a card stands on its page and the room inside it, in glass pixels: `columns` x `rows` of the page's `across` x

@@ -2,7 +2,7 @@
 // card (runtime_tiles render_full, head_row), and under it the media card itself (media_card.h layout): the cover's
 // place, the title, the artist, the progress bar with its times, the keys and the volume row. Pure arithmetic, as the
 // firmware's is; tests/test_editor_parity.py holds it to media_card.h.
-import { lineOf, uiScale, type Shape } from "./ui-scale";
+import { lineOf, touchMin, uiScale, type Shape } from "./ui-scale";
 import type { CardLook } from "./card-layout";
 import type { Rect } from "./tall-layout";
 
@@ -10,7 +10,7 @@ const div = (a: number, b: number) => Math.trunc(a / b);
 const right = (r: Rect) => r.x + r.w, bottom = (r: Rect) => r.y + r.h, cy = (r: Rect) => r.y + div(r.h, 2);
 const NONE: Rect = { x: 0, y: 0, w: 0, h: 0 };
 
-export type MediaMetrics = { large: boolean; art: boolean; clockW: number; titleH: number; artistH: number; smallH: number; px: (n: number) => number };
+export type MediaMetrics = { large: boolean; art: boolean; touch: number; clockW: number; titleH: number; artistH: number; smallH: number; px: (n: number) => number };
 const sizes = (m: MediaMetrics) => {
   const px = m.px, l = m.large;
   const slider = px(l ? 20 : 12), bar = px(l ? 6 : 4);
@@ -94,6 +94,26 @@ function layoutWith(m: MediaMetrics, width: number, height: number, volumeH: num
     y += barRow(x, w, y, withTimes);
     keys(x, w, y + h);
   }
+  if (height <= 140 && width >= 560 && width >= 3 * height) {
+    l.wide = true; l.artist = false; l.times = false;
+    const art = m.art ? Math.max(32, Math.min(height, m.px(64))) : 0;
+    l.art = { x: margin, y: 0, w: art, h: art };
+    const x = right(l.art) + 2 * g, w = Math.max(1, width - x - margin);
+    l.title = { x, y: 0, w, h: m.titleH };
+    const barY = m.titleH + div(g, 2);
+    l.bar = { x, y: barY, w, h: s.bar };
+    const keyY = barY + s.bar + div(g, 2), play = Math.min(s.play, height - keyY - 2);
+    const side = Math.max(s.key, m.touch);
+    l.prev = { x, y: keyY + div(play - side, 2), w: side, h: side };
+    l.play = { x: x + side + s.minGap, y: keyY, w: play, h: play };
+    l.next = { x: right(l.play) + s.minGap, y: l.prev.y, w: side, h: side };
+    const rowX = right(l.next) + 2 * g, rowW = Math.max(1, width - margin - rowX);
+    const rowH = Math.min(volumeH, play), rowY = keyY + div(play - rowH, 2), rowRight = rowX + rowW;
+    l.minus = { x: rowX, y: rowY, w: rowH, h: rowH };
+    l.plus = { x: rowRight - rowH, y: rowY, w: rowH, h: rowH };
+    const knobReach = g + div(s.knob, 2), volumeX = right(l.minus) + knobReach;
+    l.volume = { x: volumeX, y: rowY + div(rowH - s.slider, 2), w: Math.max(1, l.plus.x - knobReach - volumeX), h: s.slider };
+  }
   l.artRadius = Math.max(4, div(l.art.w, 12));
   return l;
 }
@@ -110,7 +130,7 @@ export function mediaLayout(m: MediaMetrics, width: number, height: number) {
  * face, the times in the small one; `clockW` the widest time its length writes. */
 export function mediaMetrics(shape: Shape, look: CardLook, art: boolean, clockW = 0): MediaMetrics {
   const { large, px } = uiScale(shape);
-  return { large, art, clockW, titleH: lineOf(look.headline), artistH: lineOf(look.sublabelBig), smallH: lineOf(look.sublabel), px };
+  return { large, art, touch: touchMin(shape), clockW, titleH: lineOf(look.headline), artistH: lineOf(look.sublabelBig), smallH: lineOf(look.sublabel), px };
 }
 /** Where the media card starts under a full card's head (render_full, render_media_full). */
 export function mediaTop(shape: Shape, headH: number) {

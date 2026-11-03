@@ -998,7 +998,7 @@ for (const look of DATA.looks) {
       out.push(`climate ${c.form} ${c.face} ${c.caption ? 1 : 0} ${r(c.stepper)} ${r(c.minus)} ${r(c.plus)} ${r(c.number)} ${r(c.captionBox)} ${r(c.bar)} ${c.room}`);
     }
     for (const art of [false, true]) for (const clockW of [0, 70]) {
-      const m = mediaLayout({ large, art, clockW, titleH: look.title, artistH: look.artist, smallH: look.small, px }, width, height);
+      const m = mediaLayout({ large, art, touch: Math.floor((look.dpi * 7 + 12) / 25), clockW, titleH: look.title, artistH: look.artist, smallH: look.small, px }, width, height);
       out.push(`media ${m.wide ? 1 : 0} ${m.times ? 1 : 0} ${m.artist ? 1 : 0} ${[m.art, m.title, m.artistLine, m.bar, m.elapsed, m.total, m.prev, m.play, m.next, m.minus, m.volume, m.plus].map(r).join(" ")} ${m.artRadius}`);
     }
   }
@@ -1112,7 +1112,7 @@ class CardHead(unittest.TestCase):
                     layouts.append({'key': str(len(cls.cases)), 'tiles': [{'entity': 'light.parity', 'name': name, 'state': 'on', 'a': attrs, 'slot': 0, 'o': o}]})
                     cls.cases.append({'key': f'{key} {size} {name[:8]}', 'shape': mine, 'columns': columns, 'name': name})
             screens.append({'key': key, 'width': shape['width'], 'height': shape['height'], 'columns': shape['columns'],
-                            'rows': shape['rows'], 'dpi': shape['dpi'], 'layouts': layouts})
+                            'rows': shape['rows'], 'dpi': shape['dpi'], 'look': shape['look'], 'layouts': layouts})
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'screens.json'
             path.write_text(json.dumps(screens))
