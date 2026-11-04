@@ -65,6 +65,7 @@ void preview_pictures(int on) {
   runtime_tiles::camera_live = {};
   dirty = true;
 }
+// A density can belong to both looks; choose the matching layout before preview_init.
 static int selected_look = 0; // 0: legacy automatic choice, 1: compact, 2: standard.
 void preview_look(int look) { selected_look = look; }
 int preview_init(int w, int h, int display_dpi, int columns, int rows) {
