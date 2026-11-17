@@ -44,7 +44,6 @@ esp32:
   variant: esp32s3
   flash_size: 16MB
   cpu_frequency: 240MHz
-  flash_chip: winbond 
 
 psram:
   mode: octal
